@@ -223,6 +223,231 @@
   .eventos-copy h3{font-size:clamp(32px,5vw,56px);max-width:11ch;}
   .eventos-copy p{max-width:40ch;color:#d7d2c5;font-family:'Newsreader',serif;font-style:italic;font-size:16.5px;}
 
+
+  /* ================= PRÓXIMOS EVENTOS ================= */
+  .proximos-eventos{
+    position:relative;
+    background:var(--dusk);
+    color:var(--cream);
+    padding:150px 0 135px;
+    overflow:hidden;
+  }
+  .proximos-eventos::before{
+    content:"";
+    position:absolute;
+    width:55vw;height:55vw;
+    max-width:760px;max-height:760px;
+    left:-18vw;top:-30vw;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(231,225,0,.10), transparent 65%);
+    filter:blur(18px);
+    pointer-events:none;
+  }
+  .eventos-head{
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:30px;
+    margin-bottom:64px;
+  }
+  .eventos-head h2{
+    font-size:clamp(52px,7vw,100px);
+    max-width:11ch;
+    line-height:.82;
+  }
+  .eventos-head .eventos-intro{
+    max-width:28ch;
+    color:#aaa69c;
+    font-family:'Newsreader',serif;
+    font-style:italic;
+    font-size:17px;
+  }
+  .eventos-grid{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+  }
+  .evento-card{
+    position:relative;
+    min-width:0;
+  }
+  .evento-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin:0 4px 14px;
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    color:#a8a49a;
+  }
+  .evento-label strong{
+    color:var(--cream);
+    font-weight:600;
+  }
+  .evento-media{
+    position:relative;
+    aspect-ratio:4/5;
+    overflow:hidden;
+    border-radius:28px;
+    background:#0b0b0c;
+    border:1px solid rgba(242,237,226,.12);
+    box-shadow:0 18px 55px rgba(0,0,0,.18);
+    transform:translateZ(0);
+  }
+  .evento-media::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:2;
+    background:linear-gradient(135deg,rgba(255,255,255,.11),transparent 26%,transparent 72%,rgba(0,0,0,.18));
+    opacity:.35;
+    pointer-events:none;
+    transition:opacity .7s var(--ease);
+  }
+  .evento-media::after{
+    content:"";
+    position:absolute;
+    z-index:3;
+    left:-70%;
+    top:-10%;
+    width:45%;
+    height:120%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
+    transform:skewX(-18deg);
+    opacity:0;
+    transition:left 1s var(--ease),opacity .5s ease;
+    pointer-events:none;
+  }
+  .evento-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform 1s var(--ease),filter 1s var(--ease);
+  }
+  .evento-card:hover .evento-media{
+    box-shadow:0 28px 75px rgba(0,0,0,.34);
+  }
+  .evento-card:hover .evento-media img{
+    transform:scale(1.045);
+    filter:saturate(1.04) contrast(1.03);
+  }
+  .evento-card:hover .evento-media::before{opacity:.65;}
+  .evento-card:hover .evento-media::after{
+    left:125%;
+    opacity:1;
+  }
+  .evento-status{
+    position:absolute;
+    left:18px;
+    bottom:18px;
+    z-index:4;
+    padding:9px 12px;
+    border:1px solid rgba(242,237,226,.24);
+    border-radius:999px;
+    background:rgba(8,8,9,.56);
+    -webkit-backdrop-filter:blur(10px);
+    backdrop-filter:blur(10px);
+    color:#f2ede2;
+    font-family:'Inter',sans-serif;
+    font-size:10px;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+  }
+  .evento-loading{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 42%, rgba(231,225,0,.09), transparent 30%),
+      #0b0b0c;
+  }
+  .evento-loading::before{
+    content:"";
+    position:absolute;
+    width:42%;
+    aspect-ratio:1;
+    border:1px solid rgba(242,237,226,.16);
+    border-radius:50%;
+    animation:loadingPulse 2.6s ease-in-out infinite;
+  }
+  .evento-loading::after{
+    content:"";
+    position:absolute;
+    width:24%;
+    aspect-ratio:1;
+    border:1px solid rgba(231,225,0,.34);
+    border-radius:50%;
+    animation:loadingPulse 2.6s .35s ease-in-out infinite;
+  }
+  .loading-word{
+    position:relative;
+    z-index:2;
+    font-family:'Big Shoulders Display',sans-serif;
+    font-size:clamp(34px,4vw,58px);
+    font-weight:800;
+    letter-spacing:.06em;
+    color:var(--cream);
+    animation:loadingBlink 1.8s ease-in-out infinite;
+  }
+  .loading-word::after{
+    content:"";
+    display:inline-block;
+    width:1.1em;
+    text-align:left;
+    animation:loadingDots 1.4s steps(4,end) infinite;
+  }
+  @keyframes loadingPulse{
+    0%,100%{transform:scale(.72);opacity:.18;}
+    50%{transform:scale(1.15);opacity:.7;}
+  }
+  @keyframes loadingBlink{
+    0%,100%{opacity:.42;transform:translateY(2px);}
+    50%{opacity:1;transform:translateY(0);}
+  }
+  @keyframes loadingDots{
+    0%{content:"";}
+    25%{content:".";}
+    50%{content:"..";}
+    75%,100%{content:"...";}
+  }
+  .evento-meta{
+    display:flex;
+    justify-content:space-between;
+    gap:18px;
+    padding:16px 4px 0;
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#7f7b73;
+  }
+  .evento-meta .active{color:var(--accent);}
+  @media (max-width:900px){
+    .proximos-eventos{padding:110px 0 100px;}
+    .eventos-grid{grid-template-columns:repeat(2,1fr);}
+    .evento-card:last-child{grid-column:1 / -1;max-width:calc(50% - 9px);}
+  }
+  @media (max-width:620px){
+    .eventos-head{display:block;margin-bottom:44px;}
+    .eventos-head h2{margin-bottom:22px;}
+    .eventos-grid{grid-template-columns:1fr;gap:42px;}
+    .evento-card:last-child{grid-column:auto;max-width:none;}
+    .evento-media{border-radius:22px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .evento-media img,.evento-loading::before,.evento-loading::after,.loading-word,.loading-word::after{animation:none!important;transition:none!important;}
+  }
+
   /* ================= CTA ================= */
   .cta-section{background:var(--cream);padding:150px 0;text-align:left;}
   .cta-section .label{margin-bottom:28px;}
@@ -488,7 +713,7 @@
   </a>
   <nav class="nav-desktop">
     <a href="#sobre">Sobre</a>
-    <a href="#frentes">Frentes</a>
+    <a href="#frentes">Eventos</a>
     <a href="#encontros">Encontros</a>
     <a class="ig" href="https://www.instagram.com/unidademvt/" target="_blank" rel="noopener">Instagram</a>
   </nav>
@@ -499,7 +724,7 @@
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="#sobre">Sobre</a>
-  <a href="#frentes">Frentes</a>
+  <a href="#frentes">Eventos</a>
   <a href="#encontros">Encontros</a>
   <a class="mm-ig" href="https://www.instagram.com/unidademvt/" target="_blank" rel="noopener">@unidademvt no Instagram</a>
 </div>
@@ -562,25 +787,65 @@
   </div>
 </section>
 
-<section class="frentes" id="frentes">
+<section class="proximos-eventos" id="frentes">
   <div class="wrap">
-    <p class="label"><span class="n">/04</span> — como vivemos isso</p>
-    <div class="frentes-head"><h2>Nossas frentes</h2></div>
+    <div class="eventos-head reveal">
+      <div>
+        <p class="label"><span class="n">/04</span> — próximos eventos</p>
+        <h2>Próximos<br>eventos</h2>
+      </div>
+      <p class="eventos-intro">O que está por vir na UNIDADE. Quando ainda não houver uma data, deixamos o espaço em espera.</p>
+    </div>
 
-    <div class="frente reveal">
-      <span class="idx">01</span>
-      <span class="name">Salas de oração</span>
-      <span class="desc">Encontros dedicados à intercessão, onde a cidade e a igreja são levadas diante de Deus em oração conjunta.</span>
-    </div>
-    <div class="frente reveal">
-      <span class="idx">02</span>
-      <span class="name">Noites de avivamento</span>
-      <span class="desc">Noites inteiras separadas para buscar o derramar do Espírito Santo, com louvor, palavra e ministração.</span>
-    </div>
-    <div class="frente reveal">
-      <span class="idx">03</span>
-      <span class="name">Cultos</span>
-      <span class="desc">Celebrações cheias da presença do Senhor, onde a comunidade se reúne para adorar e crescer junta na fé.</span>
+    <div class="eventos-grid">
+
+      <article class="evento-card reveal">
+        <div class="evento-label">
+          <strong>Sala de Oração</strong>
+          <span>01</span>
+        </div>
+        <div class="evento-media">
+          <img src="evento-sala-oracao.webp" alt="Flyer da próxima Sala de Oração da UNIDADE">
+          <span class="evento-status">Próximo</span>
+        </div>
+        <div class="evento-meta">
+          <span class="active">10 OUT · 20H</span>
+          <span>Vila Velha — ES</span>
+        </div>
+      </article>
+
+      <article class="evento-card reveal">
+        <div class="evento-label">
+          <strong>Worship Night</strong>
+          <span>02</span>
+        </div>
+        <div class="evento-media">
+          <div class="evento-loading" aria-label="Worship Night ainda sem próximo evento">
+            <span class="loading-word">LOADING</span>
+          </div>
+        </div>
+        <div class="evento-meta">
+          <span>Aguardando</span>
+          <span>Em breve</span>
+        </div>
+      </article>
+
+      <article class="evento-card reveal">
+        <div class="evento-label">
+          <strong>Revival Day</strong>
+          <span>03</span>
+        </div>
+        <div class="evento-media">
+          <div class="evento-loading" aria-label="Revival Day ainda sem próximo evento">
+            <span class="loading-word">LOADING</span>
+          </div>
+        </div>
+        <div class="evento-meta">
+          <span>Aguardando</span>
+          <span>Em breve</span>
+        </div>
+      </article>
+
     </div>
   </div>
 </section>
@@ -615,7 +880,7 @@
     <div class="foot-grid">
       <div class="foot-links">
         <a href="#sobre">Sobre</a>
-        <a href="#frentes">Frentes</a>
+        <a href="#frentes">Eventos</a>
         <a href="#encontros">Encontros</a>
         <a href="https://www.instagram.com/unidademvt/" target="_blank" rel="noopener">Instagram</a>
       </div>
