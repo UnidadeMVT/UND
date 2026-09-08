@@ -360,7 +360,7 @@
     text-transform:uppercase;
   }
   /* === CARROSSEIS INDEPENDENTES DOS PRÓXIMOS EVENTOS === */
-  .evento-carousel{position:relative;width:100%;height:100%;touch-action:pan-y;user-select:none;}
+  .evento-carousel{position:relative;width:100%;height:100%;overflow:hidden;touch-action:pan-y;user-select:none;}
   .evento-slides{display:flex;width:100%;height:100%;transition:transform .65s cubic-bezier(.22,.61,.36,1);will-change:transform;}
   .evento-slide{position:relative;flex:0 0 100%;width:100%;height:100%;overflow:hidden;}
   .evento-slide img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.01);}
@@ -822,7 +822,7 @@
         <div class="evento-media carousel" data-carousel>
           <div class="evento-carousel">
             <div class="evento-slides">
-              <div class="evento-slide"><img src="sala-oracao-nova.webp" alt="Flyer da Sala de Oração — 10 de outubro"></div>
+              <div class="evento-slide"><img src="sala-oracao-1.webp" alt="Flyer da Sala de Oração — 10 de outubro"></div>
               <div class="evento-slide"><img src="NOV.webp" alt="Flyer da Sala de Oração — 28 de novembro"></div>
             </div>
             <button class="evento-arrow prev" type="button" aria-label="Imagem anterior">‹</button>
@@ -951,40 +951,92 @@
 </script>
 
 <script>
-/* Carrosséis independentes — arraste no celular ou use as setas */
-document.querySelectorAll('[data-carousel]').forEach((root) => {
-  const track = root.querySelector('.evento-slides');
-  const slides = Array.from(root.querySelectorAll('.evento-slide'));
-  if (slides.length <= 1) return;
-  const dots = root.querySelector('.evento-dots');
-  const count = root.querySelector('.evento-count');
-  const prev = root.querySelector('.evento-arrow.prev');
-  const next = root.querySelector('.evento-arrow.next');
-  let index = 0, startX = 0, dragging = false;
+/* CARROSSÉIS INDEPENDENTES — clique, arraste ou deslize */
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('[data-carousel]').forEach(function(root){
+    var track = root.querySelector('.evento-slides');
+    var slides = Array.prototype.slice.call(root.querySelectorAll('.evento-slide'));
+    if (!track || slides.length <= 1) return;
 
-  slides.forEach((_, i) => {
-    const dot = document.createElement('button');
-    dot.type = 'button'; dot.className = 'evento-dot' + (i === 0 ? ' active' : '');
-    dot.setAttribute('aria-label', `Ir para imagem ${i + 1}`);
-    dot.addEventListener('click', () => go(i));
-    dots.appendChild(dot);
-  });
-  const dotEls = Array.from(dots.children);
+    var dots = root.querySelector('.evento-dots');
+    var count = root.querySelector('.evento-count');
+    var prev = root.querySelector('.evento-arrow.prev');
+    var next = root.querySelector('.evento-arrow.next');
+    var index = 0;
+    var startX = 0;
+    var startY = 0;
+    var moving = false;
 
-  function go(i) {
-    index = (i + slides.length) % slides.length;
-    track.style.transform = `translateX(-${index * 100}%)`;
-    dotEls.forEach((d, n) => d.classList.toggle('active', n === index));
-    if (count) count.textContent = `${index + 1} / ${slides.length}`;
-  }
-  prev.addEventListener('click', () => go(index - 1));
-  next.addEventListener('click', () => go(index + 1));
-  root.addEventListener('pointerdown', e => { startX = e.clientX; dragging = true; root.setPointerCapture?.(e.pointerId); });
-  root.addEventListener('pointerup', e => {
-    if (!dragging) return; dragging = false; const dx = e.clientX - startX;
-    if (Math.abs(dx) > 45) go(index + (dx < 0 ? 1 : -1));
+    if (dots) {
+      slides.forEach(function(_, i){
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'evento-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Ir para imagem ' + (i + 1));
+        dot.addEventListener('click', function(e){ e.stopPropagation(); go(i); });
+        dots.appendChild(dot);
+      });
+    }
+
+    function update(){
+      track.style.transform = 'translate3d(-' + (index * 100) + '%, 0, 0)';
+      var dotEls = dots ? dots.querySelectorAll('.evento-dot') : [];
+      Array.prototype.forEach.call(dotEls, function(d, n){
+        d.classList.toggle('active', n === index);
+      });
+      if (count) count.textContent = (index + 1) + ' / ' + slides.length;
+    }
+
+    function go(i){
+      index = (i + slides.length) % slides.length;
+      update();
+    }
+
+    if (prev) prev.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); go(index - 1); });
+    if (next) next.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); go(index + 1); });
+
+    root.addEventListener('touchstart', function(e){
+      if (!e.touches || !e.touches[0]) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      moving = true;
+    }, {passive:true});
+
+    root.addEventListener('touchend', function(e){
+      if (!moving || !e.changedTouches || !e.changedTouches[0]) return;
+      moving = false;
+      var dx = e.changedTouches[0].clientX - startX;
+      var dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+        go(index + (dx < 0 ? 1 : -1));
+      }
+    }, {passive:true});
+
+    /* Mouse drag no computador */
+    root.addEventListener('mousedown', function(e){
+      if (e.button !== 0) return;
+      startX = e.clientX;
+      startY = e.clientY;
+      moving = true;
+      root.classList.add('is-dragging');
+    });
+    root.addEventListener('mouseup', function(e){
+      if (!moving) return;
+      moving = false;
+      root.classList.remove('is-dragging');
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+        go(index + (dx < 0 ? 1 : -1));
+      }
+    });
+    root.addEventListener('mouseleave', function(){
+      moving = false;
+      root.classList.remove('is-dragging');
+    });
+
+    update();
   });
-  root.addEventListener('pointercancel', () => dragging = false);
 });
 </script>
 </body>
