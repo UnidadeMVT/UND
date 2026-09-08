@@ -359,6 +359,24 @@
     letter-spacing:.13em;
     text-transform:uppercase;
   }
+  /* === CARROSSEIS INDEPENDENTES DOS PRÓXIMOS EVENTOS === */
+  .evento-carousel{position:relative;width:100%;height:100%;touch-action:pan-y;user-select:none;}
+  .evento-slides{display:flex;width:100%;height:100%;transition:transform .65s cubic-bezier(.22,.61,.36,1);will-change:transform;}
+  .evento-slide{position:relative;flex:0 0 100%;width:100%;height:100%;overflow:hidden;}
+  .evento-slide img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.01);}
+  .evento-slide .evento-loading{position:absolute;inset:0;}
+  .evento-arrow{position:absolute;top:50%;z-index:6;width:42px;height:42px;border:1px solid rgba(242,237,226,.24);border-radius:50%;background:rgba(8,8,9,.55);color:var(--cream);display:grid;place-items:center;cursor:pointer;opacity:0;transform:translateY(-50%) scale(.9);transition:opacity .3s ease,transform .3s ease,background .3s ease;}
+  .evento-arrow:hover{background:rgba(8,8,9,.82);}
+  .evento-arrow.prev{left:14px;}
+  .evento-arrow.next{right:14px;}
+  .evento-media:hover .evento-arrow{opacity:1;transform:translateY(-50%) scale(1);}
+  .evento-dots{position:absolute;left:50%;bottom:16px;z-index:6;display:flex;gap:6px;transform:translateX(-50%);padding:7px 9px;border:1px solid rgba(242,237,226,.16);border-radius:999px;background:rgba(8,8,9,.42);backdrop-filter:blur(8px);}
+  .evento-dot{width:6px;height:6px;border:0;border-radius:50%;padding:0;background:rgba(242,237,226,.35);cursor:pointer;transition:width .25s ease,background .25s ease;}
+  .evento-dot.active{width:20px;border-radius:999px;background:var(--accent);}
+  .evento-count{position:absolute;right:16px;top:16px;z-index:6;padding:6px 9px;border:1px solid rgba(242,237,226,.16);border-radius:999px;background:rgba(8,8,9,.42);backdrop-filter:blur(8px);color:#f2ede2;font:10px Inter,sans-serif;letter-spacing:.08em;}
+  @media (hover:none){.evento-arrow{opacity:1;transform:translateY(-50%) scale(.92);}.evento-arrow.prev{left:10px;}.evento-arrow.next{right:10px;}}
+  @media (prefers-reduced-motion:reduce){.evento-slides{transition:none!important;}}
+
   .evento-loading{
     width:100%;
     height:100%;
@@ -794,56 +812,53 @@
         <p class="label"><span class="n">/04</span> — próximos eventos</p>
         <h2>Próximos<br>eventos</h2>
       </div>
-      <p class="eventos-intro">O que está por vir na UNIDADE. Quando ainda não houver uma data, deixamos o espaço em espera.</p>
+      <p class="eventos-intro">Cada frente tem seu próprio espaço. Arraste para o lado ou use as setas para navegar entre os próximos eventos.</p>
     </div>
 
     <div class="eventos-grid">
 
       <article class="evento-card reveal">
-        <div class="evento-label">
-          <strong>Sala de Oração</strong>
-          <span>01</span>
+        <div class="evento-label"><strong>Sala de Oração</strong><span>01</span></div>
+        <div class="evento-media carousel" data-carousel>
+          <div class="evento-carousel">
+            <div class="evento-slides">
+              <div class="evento-slide"><img src="sala-oracao-1.webp" alt="Flyer da Sala de Oração — 10 de outubro"></div>
+              <div class="evento-slide"><img src="NOV.webp" alt="Flyer da Sala de Oração — 28 de novembro"></div>
+            </div>
+            <button class="evento-arrow prev" type="button" aria-label="Imagem anterior">‹</button>
+            <button class="evento-arrow next" type="button" aria-label="Próxima imagem">›</button>
+            <div class="evento-dots" aria-label="Navegação das imagens"></div>
+            <span class="evento-count">1 / 2</span>
+            <span class="evento-status">Próximo</span>
+          </div>
         </div>
-        <div class="evento-media">
-          <img src="sala-oracao-nova.webp" alt="Flyer da próxima Sala de Oração da UNIDADE">
-          <span class="evento-status">Próximo</span>
-        </div>
-        <div class="evento-meta">
-          <span class="active">10 OUT · 20H</span>
-          <span>Vila Velha — ES</span>
-        </div>
+        <div class="evento-meta"><span class="active">10 OUT · 20H</span><span>Vila Velha — ES</span></div>
       </article>
 
       <article class="evento-card reveal">
-        <div class="evento-label">
-          <strong>Worship Night</strong>
-          <span>02</span>
-        </div>
-        <div class="evento-media">
-          <div class="evento-loading" aria-label="Worship Night ainda sem próximo evento">
-            <span class="loading-word">LOADING</span>
+        <div class="evento-label"><strong>Worship Night</strong><span>02</span></div>
+        <div class="evento-media carousel" data-carousel>
+          <div class="evento-carousel">
+            <div class="evento-slides">
+              <div class="evento-slide"><div class="evento-loading" aria-label="Worship Night ainda sem próximo evento"><span class="loading-word">LOADING</span></div></div>
+            </div>
+            <span class="evento-status">Em breve</span>
           </div>
         </div>
-        <div class="evento-meta">
-          <span>Aguardando</span>
-          <span>Em breve</span>
-        </div>
+        <div class="evento-meta"><span>Aguardando</span><span>Em breve</span></div>
       </article>
 
       <article class="evento-card reveal">
-        <div class="evento-label">
-          <strong>Revival Day</strong>
-          <span>03</span>
-        </div>
-        <div class="evento-media">
-          <div class="evento-loading" aria-label="Revival Day ainda sem próximo evento">
-            <span class="loading-word">LOADING</span>
+        <div class="evento-label"><strong>Revival Day</strong><span>03</span></div>
+        <div class="evento-media carousel" data-carousel>
+          <div class="evento-carousel">
+            <div class="evento-slides">
+              <div class="evento-slide"><div class="evento-loading" aria-label="Revival Day ainda sem próximo evento"><span class="loading-word">LOADING</span></div></div>
+            </div>
+            <span class="evento-status">Em breve</span>
           </div>
         </div>
-        <div class="evento-meta">
-          <span>Aguardando</span>
-          <span>Em breve</span>
-        </div>
+        <div class="evento-meta"><span>Aguardando</span><span>Em breve</span></div>
       </article>
 
     </div>
@@ -935,5 +950,42 @@
 })();
 </script>
 
+<script>
+/* Carrosséis independentes — arraste no celular ou use as setas */
+document.querySelectorAll('[data-carousel]').forEach((root) => {
+  const track = root.querySelector('.evento-slides');
+  const slides = Array.from(root.querySelectorAll('.evento-slide'));
+  if (slides.length <= 1) return;
+  const dots = root.querySelector('.evento-dots');
+  const count = root.querySelector('.evento-count');
+  const prev = root.querySelector('.evento-arrow.prev');
+  const next = root.querySelector('.evento-arrow.next');
+  let index = 0, startX = 0, dragging = false;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button'; dot.className = 'evento-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', `Ir para imagem ${i + 1}`);
+    dot.addEventListener('click', () => go(i));
+    dots.appendChild(dot);
+  });
+  const dotEls = Array.from(dots.children);
+
+  function go(i) {
+    index = (i + slides.length) % slides.length;
+    track.style.transform = `translateX(-${index * 100}%)`;
+    dotEls.forEach((d, n) => d.classList.toggle('active', n === index));
+    if (count) count.textContent = `${index + 1} / ${slides.length}`;
+  }
+  prev.addEventListener('click', () => go(index - 1));
+  next.addEventListener('click', () => go(index + 1));
+  root.addEventListener('pointerdown', e => { startX = e.clientX; dragging = true; root.setPointerCapture?.(e.pointerId); });
+  root.addEventListener('pointerup', e => {
+    if (!dragging) return; dragging = false; const dx = e.clientX - startX;
+    if (Math.abs(dx) > 45) go(index + (dx < 0 ? 1 : -1));
+  });
+  root.addEventListener('pointercancel', () => dragging = false);
+});
+</script>
 </body>
 </html>
