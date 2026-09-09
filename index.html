@@ -374,6 +374,9 @@
   .evento-dot{width:6px;height:6px;border:0;border-radius:50%;padding:0;background:rgba(242,237,226,.35);cursor:pointer;transition:width .25s ease,background .25s ease;}
   .evento-dot.active{width:20px;border-radius:999px;background:var(--accent);}
   .evento-count{position:absolute;right:16px;top:16px;z-index:6;padding:6px 9px;border:1px solid rgba(242,237,226,.16);border-radius:999px;background:rgba(8,8,9,.42);backdrop-filter:blur(8px);color:#f2ede2;font:10px Inter,sans-serif;letter-spacing:.08em;}
+  .evento-download{position:absolute;right:16px;bottom:16px;z-index:7;display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid rgba(242,237,226,.22);border-radius:999px;background:rgba(8,8,9,.58);backdrop-filter:blur(10px);color:#f2ede2;text-decoration:none;font:10px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;transition:background .25s ease,transform .25s ease;}
+  .evento-download:hover{background:rgba(8,8,9,.86);transform:translateY(-2px);}
+
   @media (hover:none){.evento-arrow{opacity:1;transform:translateY(-50%) scale(.92);}.evento-arrow.prev{left:10px;}.evento-arrow.next{right:10px;}}
   @media (prefers-reduced-motion:reduce){.evento-slides{transition:none!important;}}
 
@@ -812,7 +815,7 @@
         <p class="label"><span class="n">/04</span> — próximos eventos</p>
         <h2>Próximos<br>eventos</h2>
       </div>
-      <p class="eventos-intro">Cada frente tem seu próprio espaço. Arraste para o lado ou use as setas para navegar entre os próximos eventos.</p>
+      <p class="eventos-intro">Cada frente tem seu próprio espaço. Na Sala de Oração, arraste para o lado ou use as setas para ver os dois próximos flyers.</p>
     </div>
 
     <div class="eventos-grid">
@@ -822,17 +825,18 @@
         <div class="evento-media carousel" data-carousel>
           <div class="evento-carousel">
             <div class="evento-slides">
-              <div class="evento-slide"><img src="sala-oracao-1.webp" alt="Flyer da Sala de Oração — 10 de outubro"></div>
-              <div class="evento-slide"><img src="NOV.webp" alt="Flyer da Sala de Oração — 28 de novembro"></div>
+              <div class="evento-slide" data-date="10 OUT · 20H" data-place="Vila Velha — ES"><img src="sala-oracao-10-outubro.webp" alt="Flyer da Sala de Oração — 10 de outubro"></div>
+              <div class="evento-slide" data-date="28 NOV · 20H" data-place="Vila Velha — ES"><img src="sala-oracao-28-novembro.webp" alt="Flyer da Sala de Oração — 28 de novembro"></div>
             </div>
             <button class="evento-arrow prev" type="button" aria-label="Imagem anterior">‹</button>
             <button class="evento-arrow next" type="button" aria-label="Próxima imagem">›</button>
             <div class="evento-dots" aria-label="Navegação das imagens"></div>
             <span class="evento-count">1 / 2</span>
+            <a class="evento-download" href="sala-oracao-10-outubro.webp" download="sala-oracao-10-outubro.webp" aria-label="Baixar esta imagem">↓ Baixar</a>
             <span class="evento-status">Próximo</span>
           </div>
         </div>
-        <div class="evento-meta"><span class="active">10 OUT · 20H</span><span>Vila Velha — ES</span></div>
+        <div class="evento-meta"><span class="active" data-current-date>10 OUT · 20H</span><span data-current-place>Vila Velha — ES</span></div>
       </article>
 
       <article class="evento-card reveal">
@@ -960,6 +964,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
     var dots = root.querySelector('.evento-dots');
     var count = root.querySelector('.evento-count');
+    var download = root.querySelector('.evento-download');
+    var currentDate = root.closest('.evento-card').querySelector('[data-current-date]');
+    var currentPlace = root.closest('.evento-card').querySelector('[data-current-place]');
     var prev = root.querySelector('.evento-arrow.prev');
     var next = root.querySelector('.evento-arrow.next');
     var index = 0;
@@ -985,6 +992,15 @@ document.addEventListener('DOMContentLoaded', function(){
         d.classList.toggle('active', n === index);
       });
       if (count) count.textContent = (index + 1) + ' / ' + slides.length;
+      var activeSlide = slides[index];
+      var image = activeSlide ? activeSlide.querySelector('img') : null;
+      if (download && image) {
+        var file = image.getAttribute('src');
+        download.href = file;
+        download.download = file.split('/').pop();
+      }
+      if (currentDate && activeSlide && activeSlide.dataset.date) currentDate.textContent = activeSlide.dataset.date;
+      if (currentPlace && activeSlide && activeSlide.dataset.place) currentPlace.textContent = activeSlide.dataset.place;
     }
 
     function go(i){
@@ -994,8 +1010,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
     if (prev) prev.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); go(index - 1); });
     if (next) next.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); go(index + 1); });
+    if (download) download.addEventListener('click', function(e){ e.stopPropagation(); });
 
     root.addEventListener('touchstart', function(e){
+      if (e.target.closest && e.target.closest('button, a')) return;
       if (!e.touches || !e.touches[0]) return;
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
@@ -1014,6 +1032,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     /* Mouse drag no computador */
     root.addEventListener('mousedown', function(e){
+      if (e.target.closest && e.target.closest('button, a')) return;
       if (e.button !== 0) return;
       startX = e.clientX;
       startY = e.clientY;
